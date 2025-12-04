@@ -34,15 +34,33 @@ int main(){
         adjM->update(startVertice, endVertice, weight);
     }
 
+    // And here is where you start working on the three tasks
+    std::cout << "The adjaceny matrix of G is:" << std::endl;
     adjM->print();
+
+    int* oddDegrees = nullptr;
+    int c = 0;
     for (int i = 0; i < numOfVertices; i ++) {
         int deg = adjM->getDegree(i);
         if (deg % 2 > 0) {
-            std::cout << i << ", ";
+            c++;
         }
     }
-
-    // And here is where you start working on the three tasks
+    oddDegrees = new int[c];
+    for (int i = 0, j = 0; i < numOfVertices; i++) {
+        int deg = adjM->getDegree(i);
+        if (deg % 2 > 0) {
+            oddDegrees[j] = i+1;
+            j++;
+        }
+    }
+    
+    std::cout << "\nThe nodes with odd degrees in G are:" << std::endl;
+    std::cout << "O = { ";
+    for (int i = 0; i < c; i++) {
+        std::cout << oddDegrees[i] << " ";
+    }
+    std::cout << "}" << std::endl;
 
     return 0;
 }
