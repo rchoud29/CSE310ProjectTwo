@@ -1,1 +1,1 @@
-make && ./dijkstra < ../public_test_cases/tiny-weighted.txt
+make && ./dijkstra < ../public_test_cases/eco-florida-weighted.txt

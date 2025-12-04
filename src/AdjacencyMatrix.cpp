@@ -1,4 +1,5 @@
 #include "AdjacencyMatrix.h"
+#include "MinHeap.h"
 #include <iostream>
 #include <climits>
 
@@ -18,19 +19,19 @@ AdjacencyMatrix::AdjacencyMatrix(int n, int m){
 
 void AdjacencyMatrix::update(int u, int v, int w) {
     u--,v--;
-    this->adjMatrix[u][v] = w;
-    this->adjMatrix[v][u] = w;
+    adjMatrix[u][v] = w;
+    adjMatrix[v][u] = w;
 }
 
 int AdjacencyMatrix::get_weight(int u, int v) {
-    return this->adjMatrix[u][v];
+    return adjMatrix[u][v];
 }
 
 int AdjacencyMatrix::getDegree(int u) {
-    int* col = this->adjMatrix[u];
+    int* col = adjMatrix[u];
     int degree = 0;
 
-    for (int i = 0; i < this->m; i++) {
+    for (int i = 0; i < m; i++) {
         degree += col[i] > 0 ? 1 : 0;
     }
 
@@ -38,34 +39,38 @@ int AdjacencyMatrix::getDegree(int u) {
 }
 
 int* AdjacencyMatrix::dijkstra(int start) {
-    int* dist = new int[this->n];
-    bool* visited = new bool[this->n];
+    int* dist = new int[n];
 
-    for (int i = 0; i < this->n; i++) {
+    for (int i = 0; i < n; i++) {
         dist[i] = INT_MAX;
-        visited[i] = false;
     }
 
     dist[start] = 0;
 
-    for (int c = 0; c < this->n - 1; c++) {
-        int minDist = INT_MAX, u = -1;
+    MinHeap distHeap(n * 10);
+    MinHeap nodeHeap(n * 10);
 
-        for (int i = 0; i < this->n; i++) {
-            if (!visited[i] && dist[i] < minDist) {
-                minDist = dist[i];
-                u = i;
-            }
-        }
+    distHeap.insert(dist[start]);
+    nodeHeap.insert(start);
+
+    while (true) {
+        int u = nodeHeap.getMin();
+
         if (u == -1) break;
+        
+        int d = dist[u];
+        if (d != dist[u]) continue;
 
-        visited[u] = true;
+        for (int v = 0; v < n; v++) {
+            int w = adjMatrix[u][v];
 
-        for (int v = 0; v < this->n; v++) {
-            if (this->adjMatrix[u][v] > 0) {
-                if (!visited[v] && dist[u] + this->adjMatrix[u][v] < dist[v]) {
-                    dist[v] = dist[u] + this->adjMatrix[u][v];
-                }
+            if (w <= 0) continue;
+
+            if (dist[u] + w < dist[v]) {
+                dist[v] = dist[u] + w;
+
+                distHeap.insert(dist[v]);
+                nodeHeap.insert(v);
             }
         }
     }
@@ -74,16 +79,16 @@ int* AdjacencyMatrix::dijkstra(int start) {
 }
 
 void AdjacencyMatrix::print() {
-    for (int i = 0; i < this->n; i++) {
-        for (int j = 0; j < this->m; j++) {
-            std::cout << this->adjMatrix[i][j] << " ";
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            std::cout << adjMatrix[i][j] << " ";
         }
         std::cout << '\n';
     }
 }
 
 void AdjacencyMatrix::printDijkstra(int* dist) {
-    for (int i = 0; i < this->m; i++) {
-        std::cout << i+1 << ": " << dist[i] << std::endl;
+    for (int i = 0; i < n; i++) {
+        std::cout << "  " << i+1 << ": " << dist[i] << std::endl;
     }
 }

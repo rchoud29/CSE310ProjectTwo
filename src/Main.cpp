@@ -35,7 +35,7 @@ int main(){
     }
 
     // And here is where you start working on the three tasks
-    std::cout << "The adjaceny matrix of G is:" << std::endl;
+    std::cout << "The adjacency matrix of G is:" << std::endl;
     adjM->print();
 
     int* oddDegrees = nullptr;
@@ -50,7 +50,7 @@ int main(){
     for (int i = 0, j = 0; i < numOfVertices; i++) {
         int deg = adjM->getDegree(i);
         if (deg % 2 > 0) {
-            oddDegrees[j] = i+1;
+            oddDegrees[j] = i;
             j++;
         }
     }
@@ -58,9 +58,17 @@ int main(){
     std::cout << "\nThe nodes with odd degrees in G are:" << std::endl;
     std::cout << "O = { ";
     for (int i = 0; i < c; i++) {
-        std::cout << oddDegrees[i] << " ";
+        std::cout << oddDegrees[i] + 1 << " ";
     }
-    std::cout << "}" << std::endl;
+    std::cout << "}" << std::endl << std::endl;
+
+    for (int i = 0; i < c; i++) {
+        std::cout << "The shortest path lengths from Node " 
+                  << oddDegrees[i] + 1 
+                  << " to all other nodes are:" << std::endl;
+        adjM->printDijkstra(adjM->dijkstra(oddDegrees[i]));
+        std::cout << std::endl;
+    }
 
     return 0;
 }
